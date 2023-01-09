@@ -6,7 +6,7 @@
 
 #define RAND(min, max) ((min) + rand() % ((max) - (min) + 1))
 
-void grid_draw (sfRenderWindow * w, sfColor c);
+void grid_draw (sfRenderWindow * w, sfColor c, unsigned offset);
 
 #define UTILS_H
 #endif

@@ -1,10 +1,10 @@
 #include "hud.h"
 
+static sfVector2f pos [BLKQ];
+
 void
 hud_draw_next (struct ttr * t, unsigned mlt, sfRenderWindow * w)
 {
-    sfVector2f pos [BLKQ];
-
     ttr_get_pos(t, pos);
     ttr_set_pos(t, (sfVector2f) {
         WSIZEX - WOFFSET + BLKSIZE, BLKSIZE + BLKSIZE * 2 * mlt});
@@ -17,8 +17,6 @@ hud_draw_next (struct ttr * t, unsigned mlt, sfRenderWindow * w)
 void
 hud_draw_hold (struct ttr * t, sfRenderWindow * w)
 {
-    sfVector2f pos [BLKQ];
-
     ttr_get_pos(t, pos);
     ttr_set_pos(t, (sfVector2f) {WOFFSET - BLKSIZE * 2, BLKSIZE});
     ttr_set_scale(t, (sfVector2f) {0.5f, 0.5f});

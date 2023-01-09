@@ -4,6 +4,9 @@
 #include <stdlib.h>
 #include <SFML/Graphics.h>
 #include "consts.h"
+#ifdef _WIN32
+#   define _USE_MATH_DEFINES
+#endif
 #include <math.h>
 
 enum dir {
@@ -14,10 +17,10 @@ enum dir {
 };
 
 enum rot_state {
-    ROT_STATE_ZERO = 0,
-    ROT_STATE_90,
-    ROT_STATE_180,
-    ROT_STATE_270
+    RSTATE_ZERO = 0,
+    RSTATE_90,
+    RSTATE_180,
+    RSTATE_270
 };
 
 struct blk {
@@ -28,13 +31,12 @@ struct blk {
 struct ttr {
     enum ttr_form form;
     struct blk * blk;
-    unsigned q;
     enum dir dir;
     enum rot_state rot_state;
 };
 
 struct ttr * ttr_alloc (enum ttr_form form, const sfTexture * blk_txt);
-void ttr_get_pos (struct ttr * t, sfVector2f pos [BLKQ]);
+void ttr_get_pos (const struct ttr * t, sfVector2f pos [BLKQ]);
 void ttr_set_pos (struct ttr * t, sfVector2f pos);
 void ttr_set_scale (struct ttr * t, sfVector2f scale);
 void ttr_set_color (struct ttr * t, sfColor c);

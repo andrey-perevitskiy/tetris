@@ -9,9 +9,8 @@ ttr_alloc (enum ttr_form form, const sfTexture * blk_txt)
 
     t->form = form;
     t->blk = malloc(sizeof(struct blk) * BLKQ);
-    t->q = BLKQ;
     t->dir = DIR_DOWN;
-    t->rot_state = ROT_STATE_ZERO;
+    t->rot_state = RSTATE_ZERO;
     switch (form) {
          /* [3][0][1][2]
           */
@@ -34,8 +33,7 @@ ttr_alloc (enum ttr_form form, const sfTexture * blk_txt)
             color = sfYellow;
             break;
 
-        /*
-         *    [1]
+        /*    [1]
          * [3][0][2]
          */
         case TTR_FORM_T:
@@ -90,7 +88,7 @@ ttr_alloc (enum ttr_form form, const sfTexture * blk_txt)
             color = sfColor_fromRGB(0xff, 0xa5, 0x00);
             break;
     }
-    for (i = 0; i < t->q; i++) {
+    for (i = 0; i < BLKQ; i++) {
         t->blk[i].s = sfSprite_create();
         sfSprite_setTexture(t->blk[i].s, blk_txt, sfTrue);
         sfSprite_setPosition(t->blk[i].s,
@@ -103,7 +101,7 @@ ttr_alloc (enum ttr_form form, const sfTexture * blk_txt)
 }
 
 void
-ttr_get_pos (struct ttr * t, sfVector2f pos [BLKQ])
+ttr_get_pos (const struct ttr * t, sfVector2f pos [BLKQ])
 {
     unsigned i;
 
@@ -116,7 +114,7 @@ ttr_set_pos (struct ttr * t, sfVector2f pos)
 {
     unsigned i;
 
-    for (i = 0; i < t->q; i++)
+    for (i = 0; i < BLKQ; i++)
         sfSprite_setPosition(t->blk[i].s, (sfVector2f) {
             pos.x + t->blk[i].dvn.x * BLKSIZE,
             pos.y + t->blk[i].dvn.y * BLKSIZE});
@@ -127,7 +125,7 @@ ttr_set_scale (struct ttr * t, sfVector2f scale)
 {
     unsigned i;
 
-    for (i = 0; i < t->q; i++) {
+    for (i = 0; i < BLKQ; i++) {
         sfVector2f pos = sfSprite_getPosition(t->blk[i].s);
         sfVector2f scale_old = sfSprite_getScale(t->blk[i].s);
 
@@ -143,7 +141,7 @@ ttr_set_color (struct ttr * t, sfColor c)
 {
     unsigned i;
 
-    for (i = 0; i < t->q; i++)
+    for (i = 0; i < BLKQ; i++)
         sfSprite_setColor(t->blk[i].s, c);
 }
 
@@ -153,7 +151,7 @@ ttr_copy_pos (struct ttr * dest, const struct ttr * src)
     unsigned i;
     sfVector2f pos;
 
-    for (i = 0; i < dest->q; i++) {
+    for (i = 0; i < BLKQ; i++) {
         pos = sfSprite_getPosition(src->blk[0].s);
         sfSprite_setPosition(dest->blk[i].s, (sfVector2f) {
             pos.x + dest->blk[i].dvn.x * BLKSIZE,
@@ -195,7 +193,7 @@ ttr_move (struct ttr * t)
             break;
     }
 
-    for (i = 0; i < t->q; i++) {
+    for (i = 0; i < BLKQ; i++) {
         sfVector2f pos = sfSprite_getPosition(t->blk[i].s);
         pos.x += BLKSIZE * sign.x;
         pos.y += BLKSIZE * sign.y;
@@ -208,7 +206,7 @@ ttr_move_dvn (struct ttr * t, sfVector2f dvn)
 {
     unsigned i;
 
-    for (i = 0; i < t->q; i++) {
+    for (i = 0; i < BLKQ; i++) {
         sfVector2f pos = sfSprite_getPosition(t->blk[i].s);
         pos.x += dvn.x * BLKSIZE;
         pos.y += dvn.y * BLKSIZE;
@@ -227,19 +225,19 @@ ttr_rotate_90 (struct ttr * t)
 
     if (t->form == TTR_FORM_I) {
         switch (t->rot_state) {
-            case ROT_STATE_ZERO:
+            case RSTATE_ZERO:
                 t->dir = DIR_RIGHT;
                 break;
 
-            case ROT_STATE_90:
+            case RSTATE_90:
                 t->dir = DIR_DOWN;
                 break;
 
-            case ROT_STATE_180:
+            case RSTATE_180:
                 t->dir = DIR_LEFT;
                 break;
 
-            case ROT_STATE_270:
+            case RSTATE_270:
                 t->dir = DIR_UP;
                 break;
         }
@@ -247,7 +245,7 @@ ttr_rotate_90 (struct ttr * t)
     }
 
     pos = sfSprite_getPosition(t->blk[0].s);
-    for (i = 0; i < t->q; i++) {
+    for (i = 0; i < BLKQ; i++) {
         float x = t->blk[i].dvn.x;
         float y = t->blk[i].dvn.y;
         t->blk[i].dvn.x = x * cos(M_PI_2) - y * sin(M_PI_2);
@@ -257,8 +255,8 @@ ttr_rotate_90 (struct ttr * t)
             pos.y + t->blk[i].dvn.y * BLKSIZE});
     }
 
-    if (t->rot_state == ROT_STATE_270)
-        t->rot_state = ROT_STATE_ZERO;
+    if (t->rot_state == RSTATE_270)
+        t->rot_state = RSTATE_ZERO;
     else
         t->rot_state++;
 }
@@ -298,7 +296,7 @@ ttr_test_kick (struct ttr ** t, unsigned q)
     sfBool canRotate = sfTrue;
 
     switch (t[q - 1]->rot_state) {
-        case ROT_STATE_ZERO:
+        case RSTATE_ZERO:
             // Wall kick data
             if (t[q - 1]->form == TTR_FORM_I) {
                 dvn[0] = (sfVector2f) {-2.f, 0.f};
@@ -324,7 +322,7 @@ ttr_test_kick (struct ttr ** t, unsigned q)
                 }
             break;
 
-        case ROT_STATE_90:
+        case RSTATE_90:
             // Wall kick data
             if (t[q - 1]->form == TTR_FORM_I) {
                 dvn[0] = (sfVector2f) {-1.f, 0.f};
@@ -350,7 +348,7 @@ ttr_test_kick (struct ttr ** t, unsigned q)
                 }
             break;
 
-        case ROT_STATE_180:
+        case RSTATE_180:
             // Wall kick data
             if (t[q - 1]->form == TTR_FORM_I) {
                 dvn[0] = (sfVector2f) {2.f, 0.f};
@@ -376,7 +374,7 @@ ttr_test_kick (struct ttr ** t, unsigned q)
                 }
             break;
 
-        case ROT_STATE_270:
+        case RSTATE_270:
             // Wall kick data
             if (t[q - 1]->form == TTR_FORM_I) {
                 dvn[0] = (sfVector2f) {-1.f, 0.f};
@@ -411,7 +409,7 @@ ttr_check_collide_ground (const struct ttr * t)
 {
     unsigned i;
 
-    for (i = 0; i < t->q; i++) {
+    for (i = 0; i < BLKQ; i++) {
         sfVector2f pos = sfSprite_getPosition(t->blk[i].s);
         switch (t->dir) {
             case DIR_UP:
@@ -434,7 +432,7 @@ ttr_check_collide_walls (const struct ttr * t)
 {
     unsigned i;
 
-    for (i = 0; i < t->q; i++) {
+    for (i = 0; i < BLKQ; i++) {
         sfVector2f pos = sfSprite_getPosition(t->blk[i].s);
         switch (t->dir) {
             case DIR_LEFT:
@@ -475,9 +473,9 @@ ttr_check_collide_another (const struct ttr * t_base, const struct ttr ** t, uns
         base = t_base;
 
     for (i = 0; i < q - 1; i++)
-        for (j = 0; j < base->q; j++) {
+        for (j = 0; j < BLKQ; j++) {
             sfVector2f pos_active = sfSprite_getPosition(base->blk[j].s);
-            for (k = 0; k < t[i]->q; k++) {
+            for (k = 0; k < BLKQ; k++) {
                 if (t[i]->blk[k].s == NULL)
                     continue;
 
@@ -519,9 +517,9 @@ ttr_check_inside_another (const struct ttr ** t, unsigned q)
         return sfFalse;
 
     for (i = 0; i < q - 1; i++)
-        for (j = 0; j < t[q - 1]->q; j++) {
+        for (j = 0; j < BLKQ; j++) {
             sfVector2f pos_active = sfSprite_getPosition(t[q - 1]->blk[j].s);
-            for (k = 0; k < t[i]->q; k++) {
+            for (k = 0; k < BLKQ; k++) {
                 if (t[i]->blk[k].s == NULL)
                     continue;
 
@@ -546,7 +544,7 @@ ttr_line_clear (struct ttr ** t, unsigned * q)
         for (j = 0; j < FSIZEX; j++) {
             isLine = sfFalse;
             for (k = 0; k < *q + 1; k++)
-                for (l = 0; l < t[k]->q; l++) {
+                for (l = 0; l < BLKQ; l++) {
                     if (t[k]->blk[l].s == NULL)
                         continue;
 
@@ -570,7 +568,7 @@ ttr_line_clear (struct ttr ** t, unsigned * q)
         }
 
         for (j = 0; j < *q + 1; j++)
-            for (k = 0; k < t[j]->q; k++) {
+            for (k = 0; k < BLKQ; k++) {
                 if (t[j]->blk[k].s == NULL)
                     continue;
 
@@ -584,7 +582,7 @@ ttr_line_clear (struct ttr ** t, unsigned * q)
     k = -1;
     for (i = 0; i < *q + 1; i++) {
         isExists = sfFalse;
-        for (j = 0; j < t[i]->q; j++)
+        for (j = 0; j < BLKQ; j++)
             if (t[i]->blk[j].s != NULL) {
                 isExists = sfTrue;
                 break;
@@ -606,7 +604,7 @@ ttr_draw (const struct ttr * t, sfRenderWindow * w)
 {
     unsigned i;
 
-    for (i = 0; i < t->q; i++)
+    for (i = 0; i < BLKQ; i++)
         if (t->blk[i].s != NULL)
             sfRenderWindow_drawSprite(w, t->blk[i].s, NULL);
 }
@@ -616,7 +614,7 @@ ttr_destroy (struct ttr * t)
 {
     unsigned i;
 
-    for (i = 0; i < t->q; i++)
+    for (i = 0; i < BLKQ; i++)
         if (t->blk[i].s != NULL)
             sfSprite_destroy(t->blk[i].s);
 
