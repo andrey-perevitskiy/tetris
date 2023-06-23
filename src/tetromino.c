@@ -314,7 +314,7 @@ ttr_test_kick (struct ttr ** t, unsigned q)
             if (ttr_check_collide_all_static(t, q))
                 for (i = 0; i < BLKQ; i++) {
                     ttr_move_dvn(t[q - 1], dvn[i]);
-                    if (canRotate = !ttr_check_collide_all_static(t, q))
+                    if ((canRotate = !ttr_check_collide_all_static(t, q)))
                         break;
                     else
                         ttr_move_dvn(t[q - 1],
@@ -340,7 +340,7 @@ ttr_test_kick (struct ttr ** t, unsigned q)
             if (ttr_check_collide_all_static(t, q))
                 for (i = 0; i < BLKQ; i++) {
                     ttr_move_dvn(t[q - 1], dvn[i]);
-                    if (canRotate = !ttr_check_collide_all_static(t, q))
+                    if ((canRotate = !ttr_check_collide_all_static(t, q)))
                         break;
                     else
                         ttr_move_dvn(t[q - 1],
@@ -366,7 +366,7 @@ ttr_test_kick (struct ttr ** t, unsigned q)
             if (ttr_check_collide_all_static(t, q))
                 for (i = 0; i < BLKQ; i++) {
                     ttr_move_dvn(t[q - 1], dvn[i]);
-                    if (canRotate = !ttr_check_collide_all_static(t, q))
+                    if ((canRotate = !ttr_check_collide_all_static(t, q)))
                         break;
                     else
                         ttr_move_dvn(t[q - 1],
@@ -392,7 +392,7 @@ ttr_test_kick (struct ttr ** t, unsigned q)
             if (ttr_check_collide_all_static(t, q))
                 for (i = 0; i < BLKQ; i++) {
                     ttr_move_dvn(t[q - 1], dvn[i]);
-                    if (canRotate = !ttr_check_collide_all_static(t, q))
+                    if ((canRotate = !ttr_check_collide_all_static(t, q)))
                         break;
                     else
                         ttr_move_dvn(t[q - 1],

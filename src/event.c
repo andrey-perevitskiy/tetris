@@ -50,14 +50,14 @@ evt_newgame (void)
 
     w = sfRenderWindow_create(mode, "Tetris", sfClose, NULL);
     if (w == NULL) {
-        puts("Failed to create window.");
+        puts("Failed to create window");
         return -1;
     }
 
     // Load logo texture
     logo_txt = sfTexture_createFromFile("res/logo.png", NULL);
     if (logo_txt == NULL) {
-        puts("Failed to load logo texture.");
+        puts("Failed to load logo texture");
         return -1;
     }
     logo_spr = sfSprite_create();
@@ -66,14 +66,14 @@ evt_newgame (void)
     // Load block texture
     blk_txt = sfTexture_createFromFile("res/block.png", NULL);
     if (blk_txt == NULL) {
-        puts("Failed to load block texture.");
+        puts("Failed to load block texture");
         return -1;
     }
 
     // Load ghost block texture
     blk_ghost_txt = sfTexture_createFromFile("res/block_ghost.png", NULL);
     if (blk_ghost_txt == NULL) {
-        puts("Failed to load ghost block texture.");
+        puts("Failed to load ghost block texture");
         return -1;
     }
 
@@ -90,18 +90,15 @@ evt_newgame (void)
         t += sfClock_getElapsedTime(clock).microseconds;
         sfClock_restart(clock);
 
-        if (isGreeting)
-            if (t > 3000000.f) {
-                isGreeting = sfFalse;
-                sfTexture_destroy(logo_txt);
-                sfSprite_destroy(logo_spr);
-                sfRenderWindow_destroy(w);
-                mode.width = WSIZEX;
-                mode.height = WSIZEY;
-                w = sfRenderWindow_create(mode, "Tetris", sfClose, NULL);
-            }
-            else
-                goto greeting;
+        if (isGreeting && t > 3000000.f) {
+            isGreeting = sfFalse;
+            sfTexture_destroy(logo_txt);
+            sfSprite_destroy(logo_spr);
+            sfRenderWindow_destroy(w);
+            mode.width = WSIZEX;
+            mode.height = WSIZEY;
+            w = sfRenderWindow_create(mode, "Tetris", sfClose, NULL);
+        }
 
         while (sfRenderWindow_pollEvent(w, &evt))
             switch (evt.type) {
@@ -226,7 +223,7 @@ evt_newgame (void)
                     break;
             }
 
-        if (t > 1000000.f || (shouldFixTtr && t > 200000.f)) {
+        if (!isGreeting && (t > 1000000.f || (shouldFixTtr && t > 200000.f))) {
             if (shouldFixTtr) {
                 shouldFixTtr = sfFalse;
                 canHold = sfTrue;
@@ -266,7 +263,6 @@ evt_newgame (void)
 
         sfRenderWindow_clear(w, sfBlack);
         if (isGreeting)
-greeting:
             sfRenderWindow_drawSprite(w, logo_spr, NULL);
         else {
             grid_draw(w, sfColor_fromRGB(0x20, 0x20, 0x20), WOFFSET);

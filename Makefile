@@ -1,4 +1,3 @@
-CC = gcc
 CFLAGS = -Wall -Wextra -Wno-unused-parameter -Iinclude -g
 LDFLAGS = -lcsfml-system -lcsfml-graphics -lcsfml-window -lm -g
 SRC_DIR = src
@@ -14,13 +13,13 @@ DIRS = $(sort $(dir $(OBJS)))
 all: $(DIRS) $(BIN_DIR) $(BIN)
 
 $(BIN): $(OBJS)
-	$(CC) -o $@ $^ $(LDFLAGS)
+	gcc -o $@ $^ $(LDFLAGS)
 
 $(BIN_DIR):
 	@[ -d $(BIN_DIR) ] || mkdir $(BIN_DIR)
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
-	$(CC) $(CFLAGS) -c $< -o $@
+	gcc $(CFLAGS) -c $< -o $@
 
 $(DIRS):
 	@[ -d $@ ] || mkdir $@
