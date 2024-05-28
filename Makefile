@@ -1,5 +1,17 @@
-CFLAGS = -Wall -Wextra -Wno-unused-parameter -Iinclude -g
-LDFLAGS = -lcsfml-system -lcsfml-graphics -lcsfml-window -lm -g
+CFLAGS = \
+	-Wall \
+	-Wextra \
+	-Wno-unused-parameter \
+	-Iinclude \
+	-g
+LDFLAGS = \
+	-lcsfml-system \
+	-lcsfml-graphics \
+	-lcsfml-window \
+	-lcsfml-audio \
+	-lm \
+	`pkg-config --libs gtk+-3.0` \
+	-g
 SRC_DIR = src
 OBJ_DIR = obj
 BIN_DIR = bin

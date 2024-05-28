@@ -91,6 +91,8 @@ ttr_alloc (enum ttr_form form, const sfTexture * blk_txt)
     for (i = 0; i < BLKQ; i++) {
         t->blk[i].s = sfSprite_create();
         sfSprite_setTexture(t->blk[i].s, blk_txt, sfTrue);
+        sfSprite_setScale(t->blk[i].s,
+            (sfVector2f) {BLKSIZE / 16.f, BLKSIZE / 16.f});
         sfSprite_setPosition(t->blk[i].s,
             (sfVector2f) {WOFFSET + (t->blk[i].dvn.x + FSIZEX / 2 - 1) * BLKSIZE,
             (t->blk[i].dvn.y + 1) * BLKSIZE});
